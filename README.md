@@ -1,16 +1,7 @@
-Projeto com soluções em Python para a lista de exercícios (cada exercício em arquivo separado).
+Projeto com soluções em Python listas de exercícios.
 
 Arquivos:
-- `ex1_media_tres_numeros.py` - média de três números
-- `ex2_par_impar.py` - verifica par/ímpar
-- `ex3_pares_ate_n.py` - pares de 0 até N
-- `ex4_maior_menor_lista.py` - maior e menor de uma lista
-- `ex5_media_numeros_pares.py` - média dos números pares de uma lista
-- `ex6_fatorial.py` - fatorial
-- `ex7_fibonacci_ate_n.py` - sequência de Fibonacci até N
-- `ex8_eh_primo.py` - verifica número primo
-- `ex9_nomes_com_a.py` - filtra nomes que começam com 'A'
-- `test_runner.py` - roda testes de fumaça para validar as funções
+Estudo de Python da Faculdade
 
 Como executar:
 1. Abra um terminal na pasta do projeto.
