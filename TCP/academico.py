@@ -143,40 +143,149 @@ class SistemaAcademico:
         else:
             print("O aluno ainda não cumpriu os requisitos para conclusão do curso!")
 
+    # Novos métodos utilitários de busca
+    def buscar_curso_por_codigo(self, codigo):
+        return next((c for c in self.cursos if c.codigo == codigo), None)
+
+    def buscar_disciplina_por_codigo(self, codigo):
+        return next((d for d in self.disciplinas if d.codigo == codigo), None)
+
+    def buscar_aluno_por_matricula(self, matricula):
+        return next((a for a in self.alunos if a.matricula == matricula), None)
+
+    def buscar_professor_por_matricula(self, matricula):
+        return next((p for p in self.professores if p.matricula == matricula), None)
+
 def main():
     sistema = SistemaAcademico()
-    
-    # Exemplo de uso
-    # Cadastro de cursos
-    sistema.cadastrar_curso("CC001", "Ciência da Computação")
-    sistema.cadastrar_curso("SI001", "Sistemas de Informação")
-    
-    # Cadastro de disciplinas
-    sistema.cadastrar_disciplina("PROG1", "Programação I")
-    sistema.cadastrar_disciplina("BD001", "Banco de Dados")
-    
-    # Cadastro de professores
-    sistema.cadastrar_professor("P001", "João Silva", sistema.disciplinas[0], sistema.cursos[0])
-    sistema.cadastrar_professor("P002", "Maria Santos", sistema.disciplinas[1], sistema.cursos[0])
-    
-    # Cadastro de alunos
-    sistema.cadastrar_aluno("A001", "Pedro Souza", sistema.cursos[0])
-    
-    # Cadastro de notas
-    sistema.cadastrar_nota(sistema.alunos[0], sistema.disciplinas[0], 8.5)
-    sistema.cadastrar_nota(sistema.alunos[0], sistema.disciplinas[1], 7.5)
-    
-    # Gerando relatórios
-    sistema.gerar_relatorio_geral()
-    sistema.gerar_relatorio_curso(sistema.cursos[0])
-    sistema.gerar_relatorio_disciplina(sistema.disciplinas[0])
-    sistema.gerar_relatorio_aluno(sistema.alunos[0])
-    
-    # Verificando aprovação e emitindo certificado
-    status = sistema.verificar_aprovacao(sistema.alunos[0])
-    print(f"\nStatus do aluno: {status}")
-    
-    sistema.emitir_certificado(sistema.alunos[0])
+
+    def menu():
+        print("\n=== SISTEMA ACADÊMICO ===")
+        print("1 - Cadastrar curso")
+        print("2 - Cadastrar disciplina")
+        print("3 - Cadastrar professor")
+        print("4 - Cadastrar aluno")
+        print("5 - Cadastrar nota")
+        print("6 - Alterar nota")
+        print("7 - Relatório geral")
+        print("8 - Relatório por curso")
+        print("9 - Relatório por disciplina")
+        print("10 - Relatório do aluno")
+        print("11 - Emitir certificado do aluno")
+        print("0 - Sair")
+
+    while True:
+        menu()
+        op = input("Escolha uma opção: ").strip()
+        if op == "1":
+            codigo = input("Código do curso: ").strip()
+            nome = input("Nome do curso: ").strip()
+            if sistema.buscar_curso_por_codigo(codigo):
+                print("Curso já cadastrado com esse código.")
+            else:
+                sistema.cadastrar_curso(codigo, nome)
+        elif op == "2":
+            codigo = input("Código da disciplina: ").strip()
+            nome = input("Nome da disciplina: ").strip()
+            if sistema.buscar_disciplina_por_codigo(codigo):
+                print("Disciplina já cadastrada com esse código.")
+            else:
+                sistema.cadastrar_disciplina(codigo, nome)
+        elif op == "3":
+            matricula = input("Matrícula do professor: ").strip()
+            nome = input("Nome do professor: ").strip()
+            cod_disc = input("Código da disciplina (vinculada): ").strip()
+            cod_curso = input("Código do curso (vinculado): ").strip()
+            disc = sistema.buscar_disciplina_por_codigo(cod_disc)
+            curso = sistema.buscar_curso_por_codigo(cod_curso)
+            if not disc:
+                print("Disciplina não encontrada.")
+            elif not curso:
+                print("Curso não encontrado.")
+            else:
+                if sistema.buscar_professor_por_matricula(matricula):
+                    print("Professor já cadastrado com essa matrícula.")
+                else:
+                    sistema.cadastrar_professor(matricula, nome, disc, curso)
+        elif op == "4":
+            matricula = input("Matrícula do aluno: ").strip()
+            nome = input("Nome do aluno: ").strip()
+            cod_curso = input("Código do curso: ").strip()
+            curso = sistema.buscar_curso_por_codigo(cod_curso)
+            if not curso:
+                print("Curso não encontrado.")
+            else:
+                if sistema.buscar_aluno_por_matricula(matricula):
+                    print("Aluno já cadastrado com essa matrícula.")
+                else:
+                    sistema.cadastrar_aluno(matricula, nome, curso)
+        elif op == "5":
+            mat = input("Matrícula do aluno: ").strip()
+            cod_disc = input("Código da disciplina: ").strip()
+            try:
+                nota = float(input("Nota (0-10): ").strip())
+            except ValueError:
+                print("Nota inválida.")
+                continue
+            aluno = sistema.buscar_aluno_por_matricula(mat)
+            disc = sistema.buscar_disciplina_por_codigo(cod_disc)
+            if not aluno:
+                print("Aluno não encontrado.")
+            elif not disc:
+                print("Disciplina não encontrada.")
+            else:
+                sistema.cadastrar_nota(aluno, disc, nota)
+        elif op == "6":
+            mat = input("Matrícula do aluno: ").strip()
+            cod_disc = input("Código da disciplina: ").strip()
+            try:
+                nova_nota = float(input("Nova nota (0-10): ").strip())
+            except ValueError:
+                print("Nota inválida.")
+                continue
+            aluno = sistema.buscar_aluno_por_matricula(mat)
+            disc = sistema.buscar_disciplina_por_codigo(cod_disc)
+            if not aluno:
+                print("Aluno não encontrado.")
+            elif not disc:
+                print("Disciplina não encontrada.")
+            else:
+                sistema.alterar_nota(aluno, disc, nova_nota)
+        elif op == "7":
+            sistema.gerar_relatorio_geral()
+        elif op == "8":
+            cod_curso = input("Código do curso: ").strip()
+            curso = sistema.buscar_curso_por_codigo(cod_curso)
+            if not curso:
+                print("Curso não encontrado.")
+            else:
+                sistema.gerar_relatorio_curso(curso)
+        elif op == "9":
+            cod_disc = input("Código da disciplina: ").strip()
+            disc = sistema.buscar_disciplina_por_codigo(cod_disc)
+            if not disc:
+                print("Disciplina não encontrada.")
+            else:
+                sistema.gerar_relatorio_disciplina(disc)
+        elif op == "10":
+            mat = input("Matrícula do aluno: ").strip()
+            aluno = sistema.buscar_aluno_por_matricula(mat)
+            if not aluno:
+                print("Aluno não encontrado.")
+            else:
+                sistema.gerar_relatorio_aluno(aluno)
+        elif op == "11":
+            mat = input("Matrícula do aluno: ").strip()
+            aluno = sistema.buscar_aluno_por_matricula(mat)
+            if not aluno:
+                print("Aluno não encontrado.")
+            else:
+                sistema.emitir_certificado(aluno)
+        elif op == "0":
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
 
 if __name__ == "__main__":
     main()
