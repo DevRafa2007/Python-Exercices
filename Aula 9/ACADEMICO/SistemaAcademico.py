@@ -1,3 +1,8 @@
+import datetime
+from Curso import Curso
+from Disciplina import Disciplina
+from Professor import Professor
+from Aluno import Aluno
 class SistemaAcademico:
     def __init__(self):
         self.cursos = []
